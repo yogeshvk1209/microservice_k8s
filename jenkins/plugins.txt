@@ -1,0 +1,15 @@
+workflow-aggregator:latest
+git:latest
+github:latest
+docker-workflow:latest
+kubernetes:latest
+configuration-as-code:latest
+job-dsl:latest
+blueocean:latest
+pipeline-stage-view:latest
+credentials-binding:latest
+timestamper:latest
+ws-cleanup:latest
+ansicolor:latest
+matrix-auth:latest
+role-strategy:latest 
