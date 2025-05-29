@@ -12,7 +12,6 @@ This project contains three microservices:
 - kubectl
 
 ## Building the Services
-
 Build the Docker images for each service:
 
 ```bash
@@ -30,7 +29,6 @@ docker build -t http-service .
 ```
 
 ## Deploying to Kubernetes
-
 Deploy the services to Kubernetes:
 
 ```bash
@@ -44,7 +42,6 @@ kubectl get services
 ```
 
 ## Accessing the Services
-
 After deployment, you can access the services through their respective LoadBalancer services:
 
 - FastAPI Service: http://localhost:80 (forwarded to port 8000)
@@ -54,13 +51,14 @@ After deployment, you can access the services through their respective LoadBalan
 Note: If using minikube, you may need to use `minikube service <service-name>` to access the services.
 
 ## Health Checks
-
 - FastAPI Service: `/health`
 - Flask Service: `/health`
 - HTTP Service: Serves static content only
 
 ## Service Information
-
 - FastAPI Service: `/info`
 - Flask Service: `/info`
 - HTTP Service: Static webpage with version information
+
+## License
+This project is licensed under the MIT License!!! Enjoy!!!
