@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: fastapi-service:latest
+        image: yogeshvk1209/pyapi:latest
         imagePullPolicy: Never
         ports:
         - containerPort: 8000
