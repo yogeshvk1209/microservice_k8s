@@ -5,4 +5,4 @@ COPY server.py .
 COPY static/ static/
 
 EXPOSE 3000
-CMD ["python", "server.py"] 
+CMD ["python3", "server.py"] 
