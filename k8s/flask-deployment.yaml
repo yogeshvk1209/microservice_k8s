@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: flask-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: flask
@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: flask
-        image: yogeshvk1209/flaskapppy:latest
-        imagePullPolicy: Never
+        image: yogeshvk1209/flaskapppy_cent9
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
         livenessProbe:

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: fastapi-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: fastapi
@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: yogeshvk1209/pyapi:latest
-        imagePullPolicy: Never
+        image: yogeshvk1209/fastapipy_cent9
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         livenessProbe:

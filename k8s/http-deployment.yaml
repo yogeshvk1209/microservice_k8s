@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: http-deployment
 spec:
-  replicas: 2
+  replicas: 1 
   selector:
     matchLabels:
       app: http
@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: http
-        image: yogeshvk1209/httppy:latest
-        imagePullPolicy: Never
+        image: yogeshvk1209/httppy_cent9:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
 ---
