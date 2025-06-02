@@ -14,10 +14,25 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      initContainers:
+      - name: init-jenkins-volume
+        image: busybox
+        command: ['sh', '-c', 'chown -R 1000:1000 /var/jenkins_home']
+        volumeMounts:
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        securityContext:
+          runAsUser: 0
       containers:
       - name: jenkins
         image: yogeshvk1209/jenkins2.504_jdk21
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
         ports:
         - containerPort: 8080
           name: http

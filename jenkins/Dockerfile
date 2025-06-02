@@ -9,7 +9,11 @@ RUN apt-get update && apt-get install -y lsb-release ca-certificates curl && \
     https://download.docker.com/linux/debian $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" \
     | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update && apt-get install -y docker-ce-cli && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    # Setup jenkins home directory with proper permissions
+    mkdir -p /var/jenkins_home && \
+    chown -R jenkins:jenkins /var/jenkins_home && \
+    chmod -R 755 /var/jenkins_home
 
 USER jenkins
 # Install Jenkins plugins
