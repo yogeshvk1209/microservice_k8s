@@ -1,0 +1,143 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1532.va_9a_d244074a_3">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2255.v56a_15e805f12"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2255.v56a_15e805f12">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>IMAGE_TAG</string>
+        <string>IMAGE_NAME</string>
+        <string>DOCKERFILE_PATH</string>
+        <string>GIT_BRANCH</string>
+        <string>DOCKER_CONTEXT_PATH</string>
+        <string>GIT_REPO_URL</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_REPO_URL</name>
+          <description>Git repository URL</description>
+          <defaultValue>https://github.com/yourusername/microservice_k8s.git</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_BRANCH</name>
+          <description>Git branch to build</description>
+          <defaultValue>main</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOCKERFILE_PATH</name>
+          <description>Path to Dockerfile</description>
+          <defaultValue>jenkins/Dockerfile</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DOCKER_CONTEXT_PATH</name>
+          <description>Path to Docker build context</description>
+          <defaultValue>.</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>IMAGE_NAME</name>
+          <description>Name of the Docker image</description>
+          <defaultValue>jenkins2.504_jdk21</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>IMAGE_TAG</name>
+          <description>Tag for the Docker image</description>
+          <defaultValue>latest</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@4106.v7a_8a_8176d450">
+    <script>pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = &apos;docker.io&apos;
+        DOCKER_REGISTRY_CREDENTIALS = &apos;dockerhub-credentials&apos;  // You&apos;ll need to add these credentials in Jenkins
+        DOCKER_IMAGE_NAME = &apos;yogeshvk1209&apos;  // Replace with your Docker Hub username
+    }
+
+    parameters {
+        string(name: &apos;GIT_REPO_URL&apos;, defaultValue: &apos;https://github.com/yourusername/microservice_k8s.git&apos;, description: &apos;Git repository URL&apos;)
+        string(name: &apos;GIT_BRANCH&apos;, defaultValue: &apos;main&apos;, description: &apos;Git branch to build&apos;)
+        string(name: &apos;DOCKERFILE_PATH&apos;, defaultValue: &apos;jenkins/Dockerfile&apos;, description: &apos;Path to Dockerfile&apos;)
+        string(name: &apos;DOCKER_CONTEXT_PATH&apos;, defaultValue: &apos;.&apos;, description: &apos;Path to Docker build context&apos;)
+        string(name: &apos;IMAGE_NAME&apos;, defaultValue: &apos;jenkins2.504_jdk21&apos;, description: &apos;Name of the Docker image&apos;)
+        string(name: &apos;IMAGE_TAG&apos;, defaultValue: &apos;latest&apos;, description: &apos;Tag for the Docker image&apos;)
+    }
+
+    stages {
+        stage(&apos;Checkout&apos;) {
+            steps {
+                // Clean workspace before building
+                cleanWs()
+
+                // Checkout code from Git
+                git branch: params.GIT_BRANCH,
+                    url: params.GIT_REPO_URL
+            }
+        }
+
+        stage(&apos;Build Docker Image&apos;) {
+            steps {
+                script {
+                    // Change to the Docker context directory and build
+                    dir(params.DOCKER_CONTEXT_PATH) {
+                        // Build the Docker image with proper context
+                        docker.build(&quot;${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG}&quot;,
+                                   &quot;-f ${WORKSPACE}/${params.DOCKERFILE_PATH} .&quot;)
+                    }
+                }
+            }
+        }
+
+        stage(&apos;Push to DockerHub&apos;) {
+            steps {
+                script {
+                    // Login to DockerHub and push the image
+                    withCredentials([usernamePassword(credentialsId: DOCKER_REGISTRY_CREDENTIALS,
+                                                   usernameVariable: &apos;DOCKER_USERNAME&apos;,
+                                                   passwordVariable: &apos;DOCKER_PASSWORD&apos;)]) {
+                        sh &quot;&quot;&quot;
+                            echo \${DOCKER_PASSWORD} | docker login \${DOCKER_REGISTRY} -u \${DOCKER_USERNAME} --password-stdin
+                            docker push ${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG}
+                        &quot;&quot;&quot;
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up: remove Docker images to free up space
+            script {
+                sh &quot;&quot;&quot;
+                    docker rmi ${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG} || true
+                    docker logout ${DOCKER_REGISTRY} || true
+                &quot;&quot;&quot;
+            }
+
+            // Clean workspace
+            cleanWs()
+        }
+    }
+} </script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

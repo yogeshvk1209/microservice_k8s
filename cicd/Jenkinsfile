@@ -11,6 +11,7 @@ pipeline {
         string(name: 'GIT_REPO_URL', defaultValue: 'https://github.com/yourusername/microservice_k8s.git', description: 'Git repository URL')
         string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Git branch to build')
         string(name: 'DOCKERFILE_PATH', defaultValue: 'jenkins/Dockerfile', description: 'Path to Dockerfile')
+        string(name: 'DOCKER_CONTEXT_PATH', defaultValue: '.', description: 'Path to Docker build context')
         string(name: 'IMAGE_NAME', defaultValue: 'jenkins2.504_jdk21', description: 'Name of the Docker image')
         string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Tag for the Docker image')
     }
@@ -30,8 +31,12 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    docker.build("${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG}", "-f ${params.DOCKERFILE_PATH} .")
+                    // Change to the Docker context directory and build
+                    dir(params.DOCKER_CONTEXT_PATH) {
+                        // Build the Docker image with proper context
+                        docker.build("${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG}", 
+                                   "-f ${WORKSPACE}/${params.DOCKERFILE_PATH} .")
+                    }
                 }
             }
         }
