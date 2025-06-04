@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_REGISTRY_CREDENTIALS = 'dockerhub-credentials'  // You'll need to add these credentials in Jenkins
+        DOCKER_IMAGE_NAME = 'yogeshvk1209'  // Replace with your Docker Hub username
+    }
+    
+    parameters {
+        string(name: 'GIT_REPO_URL', defaultValue: 'https://github.com/yourusername/microservice_k8s.git', description: 'Git repository URL')
+        string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Git branch to build')
+        string(name: 'DOCKERFILE_PATH', defaultValue: 'jenkins/Dockerfile', description: 'Path to Dockerfile')
+        string(name: 'IMAGE_NAME', defaultValue: 'jenkins2.504_jdk21', description: 'Name of the Docker image')
+        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Tag for the Docker image')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clean workspace before building
+                cleanWs()
+                
+                // Checkout code from Git
+                git branch: params.GIT_BRANCH,
+                    url: params.GIT_REPO_URL
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    docker.build("${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG}", "-f ${params.DOCKERFILE_PATH} .")
+                }
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    // Login to DockerHub and push the image
+                    withCredentials([usernamePassword(credentialsId: DOCKER_REGISTRY_CREDENTIALS, 
+                                                   usernameVariable: 'DOCKER_USERNAME', 
+                                                   passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh """
+                            echo \${DOCKER_PASSWORD} | docker login \${DOCKER_REGISTRY} -u \${DOCKER_USERNAME} --password-stdin
+                            docker push ${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG}
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up: remove Docker images to free up space
+            script {
+                sh """
+                    docker rmi ${DOCKER_IMAGE_NAME}/${params.IMAGE_NAME}:${params.IMAGE_TAG} || true
+                    docker logout ${DOCKER_REGISTRY} || true
+                """
+            }
+            
+            // Clean workspace
+            cleanWs()
+        }
+    }
+} 

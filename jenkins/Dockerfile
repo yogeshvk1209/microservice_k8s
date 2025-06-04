@@ -13,7 +13,12 @@ RUN apt-get update && apt-get install -y lsb-release ca-certificates curl && \
     # Setup jenkins home directory with proper permissions
     mkdir -p /var/jenkins_home && \
     chown -R jenkins:jenkins /var/jenkins_home && \
-    chmod -R 755 /var/jenkins_home
+    chmod -R 755 /var/jenkins_home && \
+    # Add jenkins user to docker group and create docker.sock directory
+    groupadd -g 998 docker && \
+    usermod -aG docker jenkins && \
+    mkdir -p /var/run/docker && \
+    chown -R jenkins:docker /var/run/docker
 
 USER jenkins
 # Install Jenkins plugins
