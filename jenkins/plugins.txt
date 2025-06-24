@@ -13,3 +13,6 @@ ws-cleanup:latest
 ansicolor:latest
 matrix-auth:latest
 role-strategy:latest 
+kubernetes:latest
+kubernetes-credentials-provider:latest
+kubernetes-cli:latest
