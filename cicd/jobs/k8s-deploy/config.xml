@@ -8,10 +8,10 @@
       <parameters>
         <string>IMAGE_TAG</string>
         <string>IMAGE_NAME</string>
-        <string>DOCKERFILE_PATH</string>
+        <string>Deployment_PATH</string>
         <string>APP_NAME</string>
         <string>GIT_BRANCH</string>
-        <string>DOCKER_CONTEXT_PATH</string>
+        <string>Deployment_CONTEXT_PATH</string>
         <string>GIT_REPO_URL</string>
       </parameters>
       <options/>
@@ -82,8 +82,8 @@
     parameters {
         string(name: &apos;GIT_REPO_URL&apos;, defaultValue: &apos;https://github.com/yourusername/microservice_k8s.git&apos;, description: &apos;Git repository URL&apos;)
         string(name: &apos;GIT_BRANCH&apos;, defaultValue: &apos;main&apos;, description: &apos;Git branch to build&apos;)
-        string(name: &apos;DOCKERFILE_PATH&apos;, defaultValue: &apos;jenkins/Dockerfile&apos;, description: &apos;Path to Dockerfile&apos;)
-        string(name: &apos;DOCKER_CONTEXT_PATH&apos;, defaultValue: &apos;.&apos;, description: &apos;Path to Docker build context&apos;)
+        string(name: &apos;Deployment_PATH&apos;, defaultValue: &apos;jenkins/Dockerfile&apos;, description: &apos;Path to Dockerfile&apos;)
+        string(name: &apos;Deployment_CONTEXT_PATH&apos;, defaultValue: &apos;.&apos;, description: &apos;Path to Docker build context&apos;)
         string(name: &apos;IMAGE_NAME&apos;, defaultValue: &apos;jenkins2.504_jdk21&apos;, description: &apos;Name of the Docker image&apos;)
         string(name: &apos;IMAGE_TAG&apos;, defaultValue: &apos;latest&apos;, description: &apos;Tag for the Docker image&apos;)
         string(name: &apos;APP_NAME&apos;, defaultValue: &apos;httppy_cent9&apos;, description: &apos;APP to be deployed&apos;)
@@ -103,9 +103,10 @@
             steps {
                 script {
                     // Set KUBECONFIG environment variable
+                    dir(params.Deployment_CONTEXT_PATH) {
                     withEnv([&quot;KUBECONFIG=${KUBECONFIG}&quot;]) {
-                        sh &quot;kubectl apply -f deployment.yaml&quot;
-                        sh &quot;kubectl apply -f service.yaml&quot;
+                        sh &quot;kubectl apply -f ${params.Deployment_PATH}/${params.APP_NAME}-deployment.yaml&quot;
+                    }
                     }
                 }
             }
