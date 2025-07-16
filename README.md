@@ -100,6 +100,8 @@ Note: If using minikube, you may need to use `minikube service <service-name>` t
 
 This project includes a comprehensive monitoring setup with Prometheus, Grafana, Node Exporter, and Kube State Metrics.
 
+![Grafana Dashboard](Grafana.png)
+
 ### Components
 
 **Prometheus** - Metrics collection and storage
