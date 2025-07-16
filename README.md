@@ -132,10 +132,15 @@ After accessing Grafana, import these dashboard IDs for instant monitoring:
 # In Grafana: Dashboards → Import → Enter ID
 ```
 
-- **Node Exporter Full**: `1860` - Comprehensive host metrics
-- **Kubernetes Cluster Monitoring**: `315` - Overall cluster health
-- **Kube State Metrics**: `13332` - Kubernetes object monitoring
-- **Prometheus Stats**: `2` - Prometheus server metrics
+#### Essential Dashboards (Import These First):
+- **Kubernetes Cluster Monitoring (via Prometheus)**: `315` - Overall cluster health, pod CPU/memory utilization, node status and capacity
+- **Node Exporter Full**: `1860` - Comprehensive host-level metrics including CPU, memory, disk, network for all nodes
+- **Kubernetes Pod Monitoring**: `6417` - Detailed pod-level metrics from cAdvisor, container CPU/memory/network I/O, pod restart tracking
+
+#### Additional Useful Dashboards:
+- **Kube State Metrics v2**: `13332` - Kubernetes object states and counts, deployment/service/pod status, resource quotas
+- **Kubernetes Capacity Planning**: `5228` - Resource utilization trends, capacity planning insights, long-term cluster health
+- **Prometheus 2.0 Overview**: `3662` - Prometheus server performance, scrape duration and success rates, query performance metrics
 
 ### Monitoring Features
 
