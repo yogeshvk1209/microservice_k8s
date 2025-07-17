@@ -167,7 +167,6 @@ spec:
         volumeMounts:
         - name: bpf-maps
           mountPath: /sys/fs/bpf
-          mountPropagation: Bidirectional
         - name: cilium-run
           mountPath: /var/run/cilium
         - name: cni-path
@@ -264,7 +263,6 @@ spec:
         volumeMounts:
         - name: bpf-maps
           mountPath: /sys/fs/bpf
-          mountPropagation: Bidirectional
       - name: clean-cilium-state
         image: quay.io/cilium/cilium:v1.14.5
         imagePullPolicy: IfNotPresent
@@ -300,7 +298,6 @@ spec:
           mountPath: /sys/fs/bpf
         - name: cilium-cgroup
           mountPath: /run/cilium/cgroupv2
-          mountPropagation: HostToContainer
         - name: cilium-run
           mountPath: /var/run/cilium
       nodeSelector:
