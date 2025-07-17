@@ -58,7 +58,6 @@ spec:
           readOnly: true
         - name: root
           mountPath: /host/root
-          mountPropagation: HostToContainer
           readOnly: true
         securityContext:
           runAsNonRoot: true
