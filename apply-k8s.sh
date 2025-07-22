@@ -8,7 +8,11 @@ set -e  # Exit immediately if a command exits with a non-zero status
 
 echo "🚀 Applying Kubernetes manifests..."
 
-# Apply core infrastructure components first
+# Create the monitoring namespace first
+echo "📦 Creating monitoring namespace..."
+kubectl apply -f k8s/monitoring-namespace.yaml
+
+# Apply core infrastructure components
 echo "📦 Applying CNI (Cilium)..."
 kubectl apply -f k8s/cilium-deployment.yaml
 
