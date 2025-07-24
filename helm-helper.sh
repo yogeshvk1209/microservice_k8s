@@ -21,13 +21,9 @@ case $CHART_NAME in
         NAMESPACE="kube-system"
         CHART_PATH="./helm-charts/infrastructure"
         ;;
-    "networking")
-        NAMESPACE="kube-system"
-        CHART_PATH="./helm-charts/networking"
-        ;;
     *)
         echo "❌ Unknown chart: $CHART_NAME"
-        echo "Available charts: monitoring, applications, infrastructure, networking"
+        echo "Available charts: monitoring, applications, infrastructure"
         exit 1
         ;;
 esac

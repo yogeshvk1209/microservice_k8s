@@ -1,0 +1,41 @@
+{{- if .Values.http.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-server
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: http-server
+spec:
+  replicas: {{ .Values.http.replicaCount }}
+  selector:
+    matchLabels:
+      app: http-server
+  template:
+    metadata:
+      labels:
+        app: http-server
+    spec:
+      containers:
+      - name: http
+        image: {{ .Values.http.image.repository }}:{{ .Values.http.image.tag }}
+        imagePullPolicy: {{ .Values.http.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.http.service.port }}
+        resources:
+          {{- toYaml .Values.http.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-service
+  namespace: {{ .Values.namespace.name }}
+spec:
+  type: {{ .Values.http.service.type }}
+  ports:
+  - port: {{ .Values.http.service.port }}
+    targetPort: {{ .Values.http.service.port }}
+    protocol: TCP
+  selector:
+    app: http-server
+{{- end }}

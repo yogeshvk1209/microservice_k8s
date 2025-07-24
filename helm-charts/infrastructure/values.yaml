@@ -9,6 +9,15 @@ cilium:
     enableIPv4: true
     enableIPv6: false
     enableL7Proxy: true
+    bpfPolicyMapMax: 16384
+    enableBandwidthManager: false
+    enableLocalRedirectPolicy: false
+  resources:
+    limits:
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
 clusterAutoscaler:
   enabled: true
@@ -40,3 +49,52 @@ nodeExporter:
     limits:
       cpu: 250m
       memory: 180Mi
+
+coredns:
+  enabled: true
+  image:
+    repository: registry.k8s.io/coredns/coredns
+    tag: v1.11.1
+    pullPolicy: IfNotPresent
+  service:
+    clusterIP: 10.96.0.10
+  resources:
+    limits:
+      memory: 170Mi
+    requests:
+      cpu: 100m
+      memory: 70Mi
+  config:
+    corefile: |
+      .:53 {
+          errors
+          health {
+             lameduck 5s
+          }
+          ready
+          kubernetes cluster.local in-addr.arpa ip6.arpa {
+             pods insecure
+             fallthrough in-addr.arpa ip6.arpa
+             ttl 30
+          }
+          prometheus :9153
+          forward . /etc/resolv.conf {
+             max_concurrent 1000
+          }
+          cache 30
+          loop
+          reload
+          loadbalance
+      }
+
+nodeLocalDns:
+  enabled: true
+  image:
+    repository: registry.k8s.io/dns/k8s-dns-node-cache
+    tag: 1.22.24
+    pullPolicy: IfNotPresent
+  localIp: "169.254.20.10,10.96.0.10"
+  resources:
+    requests:
+      cpu: 25m
+      memory: 5Mi

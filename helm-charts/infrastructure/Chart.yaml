@@ -1,6 +1,6 @@
 apiVersion: v2
 name: infrastructure
-description: A Helm chart for Kubernetes infrastructure components
+description: A Helm chart for Kubernetes infrastructure components including CNI, DNS, autoscaling, and monitoring
 type: application
 version: 0.1.0
 appVersion: "1.0"
@@ -9,6 +9,8 @@ keywords:
   - cilium
   - cluster-autoscaler
   - node-exporter
+  - coredns
+  - node-local-dns
 home: https://github.com/your-org/infrastructure-chart
 maintainers:
   - name: Your Name

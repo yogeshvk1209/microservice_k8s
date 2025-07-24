@@ -6,10 +6,9 @@ This directory contains Helm charts for deploying the microservices infrastructu
 
 ```
 helm-charts/
-├── monitoring/          # Prometheus, Grafana, Metrics Server
+├── monitoring/          # Prometheus, Grafana, Metrics Server, Kube State Metrics
 ├── applications/        # FastAPI, Flask, Jenkins, HTTP services
-├── infrastructure/      # Cilium, Cluster Autoscaler, Node Exporter
-└── networking/          # CoreDNS, Node Local DNS
+└── infrastructure/      # Cilium, Cluster Autoscaler, Node Exporter, CoreDNS, Node Local DNS
 ```
 
 ## Quick Start
@@ -48,13 +47,8 @@ helm-charts/
 
 ### 3. Infrastructure Chart
 - **Namespace**: `kube-system`
-- **Components**: Cilium CNI, Cluster Autoscaler, Node Exporter
+- **Components**: Cilium CNI, Cluster Autoscaler, Node Exporter, CoreDNS, Node Local DNS
 - **Values**: `helm-charts/infrastructure/values.yaml`
-
-### 4. Networking Chart
-- **Namespace**: `kube-system`
-- **Components**: CoreDNS, Node Local DNS
-- **Values**: `helm-charts/networking/values.yaml`
 
 ## Customization
 
@@ -84,5 +78,4 @@ helm rollback monitoring 1 -n monitoring
 helm uninstall monitoring -n monitoring
 helm uninstall applications -n default
 helm uninstall infrastructure -n kube-system
-helm uninstall networking -n kube-system
 ```

@@ -14,16 +14,11 @@ if ! command -v helm &> /dev/null; then
     exit 1
 fi
 
-# Deploy infrastructure components first
+# Deploy infrastructure components first (includes networking)
 echo "🏗️  Deploying infrastructure components..."
 helm upgrade --install infrastructure ./helm-charts/infrastructure \
     --namespace kube-system \
     --create-namespace
-
-# Deploy networking components
-echo "🌐 Deploying networking components..."
-helm upgrade --install networking ./helm-charts/networking \
-    --namespace kube-system
 
 # Deploy monitoring stack
 echo "📊 Deploying monitoring stack..."
@@ -39,10 +34,9 @@ helm upgrade --install applications ./helm-charts/applications \
 echo "✅ All Helm charts deployed successfully!"
 echo ""
 echo "📋 Deployment Summary:"
-echo "  - Infrastructure: helm-charts/infrastructure"
-echo "  - Networking: helm-charts/networking"
-echo "  - Monitoring: helm-charts/monitoring"
-echo "  - Applications: helm-charts/applications"
+echo "  - Infrastructure: helm-charts/infrastructure (Cilium, Cluster Autoscaler, Node Exporter, CoreDNS, Node Local DNS)"
+echo "  - Monitoring: helm-charts/monitoring (Prometheus, Grafana, Metrics Server)"
+echo "  - Applications: helm-charts/applications (FastAPI, Flask, Jenkins, HTTP)"
 echo ""
 echo "🔍 Check deployment status:"
 echo "  helm list -A"

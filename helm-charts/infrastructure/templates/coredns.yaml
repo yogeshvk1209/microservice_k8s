@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: coredns
+  name: {{ .Release.Name }}-coredns
   namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -10,7 +10,7 @@ kind: ClusterRole
 metadata:
   labels:
     kubernetes.io/bootstrapping: rbac-defaults
-  name: system:coredns
+  name: {{ .Release.Name }}-system:coredns
 rules:
   - apiGroups:
     - ""
@@ -37,20 +37,20 @@ metadata:
     rbac.authorization.kubernetes.io/autoupdate: "true"
   labels:
     kubernetes.io/bootstrapping: rbac-defaults
-  name: system:coredns
+  name: {{ .Release.Name }}-system:coredns
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: system:coredns
+  name: {{ .Release.Name }}-system:coredns
 subjects:
 - kind: ServiceAccount
-  name: coredns
+  name: {{ .Release.Name }}-coredns
   namespace: kube-system
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: coredns
+  name: {{ .Release.Name }}-coredns
   namespace: kube-system
 data:
   Corefile: {{ .Values.coredns.config.corefile | quote }}
@@ -58,7 +58,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coredns
+  name: {{ .Release.Name }}-coredns
   namespace: kube-system
   labels:
     k8s-app: kube-dns
@@ -79,7 +79,7 @@ spec:
         app.kubernetes.io/name: coredns
     spec:
       priorityClassName: system-cluster-critical
-      serviceAccountName: coredns
+      serviceAccountName: {{ .Release.Name }}-coredns
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
@@ -143,7 +143,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: coredns
+            name: {{ .Release.Name }}-coredns
             items:
             - key: Corefile
               path: Corefile
