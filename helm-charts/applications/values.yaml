@@ -6,7 +6,7 @@ fastapi:
   enabled: true
   replicaCount: 2
   image:
-    repository: your-registry/fastapi-app
+    repository: yogeshvk1209/fastapipy_cent9
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -24,7 +24,7 @@ flask:
   enabled: true
   replicaCount: 2
   image:
-    repository: your-registry/flask-app
+    repository: yogeshvk1209/flaskapppy_cent9
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -42,7 +42,7 @@ http:
   enabled: true
   replicaCount: 1
   image:
-    repository: httpd
+    repository: yogeshvk1209/httppy_cent9
     tag: latest
     pullPolicy: IfNotPresent
   service:
