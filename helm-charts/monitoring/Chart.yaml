@@ -1,0 +1,19 @@
+apiVersion: v2
+name: monitoring
+description: A Helm chart for monitoring stack including Prometheus, Grafana, and Metrics Server
+type: application
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - monitoring
+  - prometheus
+  - grafana
+  - metrics
+home: https://github.com/your-org/monitoring-chart
+sources:
+  - https://github.com/prometheus/prometheus
+  - https://github.com/grafana/grafana
+  - https://github.com/kubernetes-sigs/metrics-server
+maintainers:
+  - name: Your Name
+    email: your.email@example.com

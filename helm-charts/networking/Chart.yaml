@@ -1,0 +1,15 @@
+apiVersion: v2
+name: networking
+description: A Helm chart for networking components including DNS
+type: application
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - networking
+  - dns
+  - coredns
+  - node-local-dns
+home: https://github.com/your-org/networking-chart
+maintainers:
+  - name: Your Name
+    email: your.email@example.com

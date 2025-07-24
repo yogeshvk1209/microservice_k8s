@@ -1,0 +1,79 @@
+namespace:
+  name: default
+  create: false
+
+fastapi:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: your-registry/fastapi-app
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+flask:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: your-registry/flask-app
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+http:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: httpd
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 80
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+jenkins:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: jenkins/jenkins
+    tag: lts
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 8080
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: 10Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi

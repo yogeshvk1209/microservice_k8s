@@ -1,0 +1,69 @@
+{{- if .Values.jenkins.enabled }}
+{{- if .Values.jenkins.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-pvc
+  namespace: {{ .Values.namespace.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.jenkins.persistence.size }}
+  {{- if .Values.jenkins.persistence.storageClass }}
+  storageClassName: {{ .Values.jenkins.persistence.storageClass }}
+  {{- end }}
+---
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: jenkins
+spec:
+  replicas: {{ .Values.jenkins.replicaCount }}
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: {{ .Values.jenkins.image.repository }}:{{ .Values.jenkins.image.tag }}
+        imagePullPolicy: {{ .Values.jenkins.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.jenkins.service.port }}
+        {{- if .Values.jenkins.persistence.enabled }}
+        volumeMounts:
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        {{- end }}
+        resources:
+          {{- toYaml .Values.jenkins.resources | nindent 10 }}
+      {{- if .Values.jenkins.persistence.enabled }}
+      volumes:
+      - name: jenkins-home
+        persistentVolumeClaim:
+          claimName: jenkins-pvc
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+  namespace: {{ .Values.namespace.name }}
+spec:
+  type: {{ .Values.jenkins.service.type }}
+  ports:
+  - port: {{ .Values.jenkins.service.port }}
+    targetPort: {{ .Values.jenkins.service.port }}
+    protocol: TCP
+  selector:
+    app: jenkins
+{{- end }}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: kube-system
+data:
+  identity-allocation-mode: {{ .Values.config.identityAllocationMode | quote }}
+  cilium-endpoint-gc-interval: {{ .Values.config.endpointGcInterval | quote }}
+  enable-ipv4: {{ .Values.config.enableIPv4 | quote }}
+  enable-ipv6: {{ .Values.config.enableIPv6 | quote }}
+  enable-bpf-clock-probe: {{ .Values.config.enableBpfClockProbe | quote }}
+  preallocate-bpf-maps: {{ .Values.config.preallocateBpfMaps | quote }}
+  enable-l7-proxy: {{ .Values.config.enableL7Proxy | quote }}
+  bpf-policy-map-max: {{ .Values.config.bpfPolicyMapMax | quote }}
+  enable-bandwidth-manager: {{ .Values.config.enableBandwidthManager | quote }}
+  enable-local-redirect-policy: {{ .Values.config.enableLocalRedirectPolicy | quote }}

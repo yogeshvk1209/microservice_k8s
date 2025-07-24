@@ -1,0 +1,42 @@
+cilium:
+  enabled: true
+  image:
+    repository: quay.io/cilium/cilium
+    tag: v1.14.5
+    pullPolicy: IfNotPresent
+  config:
+    identityAllocationMode: crd
+    enableIPv4: true
+    enableIPv6: false
+    enableL7Proxy: true
+
+clusterAutoscaler:
+  enabled: true
+  image:
+    repository: registry.k8s.io/autoscaling/cluster-autoscaler
+    tag: v1.28.2
+    pullPolicy: Always
+  cloudProvider: aws
+  resources:
+    requests:
+      cpu: 100m
+      memory: 600Mi
+    limits:
+      cpu: 100m
+      memory: 600Mi
+
+nodeExporter:
+  enabled: true
+  image:
+    repository: prom/node-exporter
+    tag: v1.7.0
+    pullPolicy: IfNotPresent
+  service:
+    port: 9100
+  resources:
+    requests:
+      cpu: 102m
+      memory: 180Mi
+    limits:
+      cpu: 250m
+      memory: 180Mi
